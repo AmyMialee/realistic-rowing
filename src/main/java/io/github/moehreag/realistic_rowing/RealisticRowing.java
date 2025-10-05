@@ -17,35 +17,22 @@ public class RealisticRowing implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		try {
-			if (FabricLoader.getInstance().isModLoaded("smallships")) {
-				boats.put(Class.forName("com.talhanation.smallships.world.entity.ship.Ship"), false);
-			}
-		} catch (ClassNotFoundException ignored) {
-
-		}
+			if (FabricLoader.getInstance().isModLoaded("smallships")) boats.put(Class.forName("com.talhanation.smallships.world.entity.ship.Ship"), false);
+		} catch (ClassNotFoundException ignored) {}
 	}
 
 	public static boolean shouldActivate(Entity e) {
-		if (activationCache.containsKey(e)) {
-			return activationCache.get(e);
-		}
-		boolean value = true;
-		for (Map.Entry<Class<?>, Boolean> entry : boats.entrySet()) {
-			if (entry.getKey().isAssignableFrom(e.getClass())) {
-				value = entry.getValue();
-			}
+		if (activationCache.containsKey(e)) return activationCache.get(e);
+        var value = true;
+		for (var entry : boats.entrySet()) {
+			if (entry.getKey().isAssignableFrom(e.getClass())) value = entry.getValue();
 		}
 		activationCache.put(e, value);
 		return value;
 	}
 
 	public static void setPaddleOffset(AbstractBoatEntity entity, ModelPart part) {
-		if (shouldActivate(entity)) {
-			if (entity.getPassengerList().size() == ((BoatEntityAccessor) entity).getMaxPassengerCount()) {
-				part.originX = 7;
-			} else {
-				part.originX = 3;
-			}
-		}
-	}
+        if (!shouldActivate(entity)) return;
+        part.originX = entity.getPassengerList().size() == ((BoatEntityAccessor) entity).getMaxPassengerCount() ? 7 : 3;
+    }
 }

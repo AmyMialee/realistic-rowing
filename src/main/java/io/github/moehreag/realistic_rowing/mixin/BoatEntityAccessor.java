@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(AbstractBoatEntity.class)
 public interface BoatEntityAccessor {
-
 	@Invoker("getMaxPassengers")
 	int getMaxPassengerCount();
 }
